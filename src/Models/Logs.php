@@ -7,10 +7,92 @@ use WpMailCatcher\GeneralHelper;
 class Logs
 {
     static public $postsPerPage = 10;
+    static private $casts = [
+        'time' => 'int',
+        'email_to' => 'arrayToString',
+        'subject' => 'sanitiseInput',
+        'message' => 'sanitiseInput',
+        'backtrace_segment' => 'json',
+        'status' => 'int',
+        'attachments' => 'json',
+        'additional_headers' => 'json'
+    ];
 
     static public function getTotalPages()
     {
         return ceil(self::getTotalAmount() / self::$postsPerPage);
+    }
+
+    static private function processCasts($args)
+    {
+        array_walk($args, function(&$value, $key) {
+            if (isset(self::$casts[$key])) {
+                switch (self::$casts[$key]) {
+                    case ('int') :
+                        $value = (int)$value;
+                        break;
+                    case ('json') :
+                        $value = json_encode($value);
+                        break;
+                    case ('sanitiseInput') :
+                        $value = GeneralHelper::sanitiseInput($value);
+                        break;
+                    case ('arrayToString') :
+                        $value = GeneralHelper::arrayToString($value);
+                        break;
+                }
+            }
+
+            return;
+        });
+
+        return $args;
+    }
+
+    static public function save($args = [])
+    {
+        global $wpdb;
+
+        $defaults = [
+            'time' => time(),
+            'email_to' => '',
+            'subject' => '',
+            'message' => '',
+            'backtrace_segment' => '',
+            'status' => 1,
+            'attachments' => '',
+            'additional_headers' => ''
+        ];
+
+        if (empty($args['email_to']) && !empty($args['to'])) {
+            $args['email_to'] = $args['to'];
+            unset($args['to']);
+        }
+
+        if (empty($args['additional_headers']) && !empty($args['headers'])) {
+            $args['additional_headers'] = $args['headers'];
+            unset($args['headers']);
+        }
+
+        $args = array_merge($defaults, $args);
+
+        var_dump(self::processCasts($args));
+        exit;
+
+        $wpdb->insert($wpdb->prefix . GeneralHelper::$tableName, self::processCasts($args));
+
+        return $wpdb->insert_id;
+    }
+
+    static public function update($id, $args = [])
+    {
+        global $wpdb;
+
+        $wpdb->update(
+            $wpdb->prefix . GeneralHelper::$tableName, self::processCasts($args), [
+                'id' => $id
+            ]
+        );
     }
 
 	/**

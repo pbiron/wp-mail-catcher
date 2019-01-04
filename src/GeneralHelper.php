@@ -123,6 +123,13 @@ class GeneralHelper
 		return $value;
 	}
 
+	static public function sanitiseInput($input)
+    {
+        return htmlspecialchars(
+            preg_replace('#<script(.*?)>(.*?)</script>#is', '', $input)
+        );
+    }
+
 	static public function getAttachmentIdsFromUrl($urls)
 	{
 		if (empty($urls)) {

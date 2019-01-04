@@ -4,6 +4,7 @@ namespace WpMailCatcher\Loggers;
 
 use WpMailCatcher\GeneralHelper;
 use WP_Error;
+use WpMailCatcher\Models\Logs;
 
 abstract class Logger
 {
@@ -28,14 +29,10 @@ abstract class Logger
      */
 	public function recordMail($args)
 	{
-		global $wpdb;
+        $args['attachments'] = $this->getAttachmentLocations($args['attachments']);
+        $args['backtrace_segment'] = $this->getBacktrace();
 
-		$wpdb->insert(
-			$wpdb->prefix . GeneralHelper::$tableName,
-			$this->getMailArgs($args)
-		);
-
-		$this->id = $wpdb->insert_id;
+        $this->id = Logs::save($args);
 
 		if (!isset($args['to']) || $args['to'] == null) {
 			$args['to'] = [];
