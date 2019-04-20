@@ -8,14 +8,14 @@ Stable tag: 1.2.4
 License: GNU General Public License v3.0
 License URI: https://raw.githubusercontent.com/JWardee/wp-mail-catcher/master/LICENSE
 
-A fast, lightweight plugin that saves emails sent by your WordPress website (under 140kb in size!)
+A fast, lightweight plugin that saves emails sent by your WordPress website (under 125kb in size!)
 
 == Description ==
-A fast, lightweight plugin that saves emails sent by your WordPress website (under 140kb in size!)
+A fast, lightweight plugin that saves emails sent by your WordPress website (under 125kb in size!)
 
 ## Features
 * Zero setup required - just install and away you go
-* Minimalistic - no overbloated features you never use weighing your site down - under 140kb in size!
+* Minimalistic - no overbloated features you never use weighing your site down - under 125kb in size!
 * Bulk export emails to CSV for easy inclusion into Excel or any other program
 * Compose new emails with the WordPress controls you're already familiar with
 * Resend your emails in bulk
